@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping List</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Add this style to make the card look nice */
+        .card {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card img {
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            margin: 5px 0;
+        }
+
+        .edit,
+        .delete {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .edit:hover,
+        .delete:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body style="background-color: #81d4fa;">
+    <div class="container" style="background-color: #ffd740; margin-top: 50px; padding-left: 500px; padding-right: 500px; box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+">
+        <h2>Shopping List</h2>
+        <h3>Add Item</h3>
+        <p>
+            <input id="new-task" type="text"><button id="addButton">Add</button>
+        </p>
+
+        <h3>For Buying</h3>
+        <ul id="incomplete-tasks">
+        </ul>
+
+        <h3>Purchased</h3>
+        <ul id="completed-tasks">
+        </ul>
+    </div>
+
+    <script>
+
+        var taskInput = document.getElementById("new-task"); //new-task
+        var addButton = document.getElementsByTagName("button")[0]; //first button
+        var incompleteTasksHolder = document.getElementById("incomplete-tasks"); //incomplete-tasks
+        var completedTasksHolder = document.getElementById("completed-tasks"); //completed-tasks
+
+        // New Task List Item
+        var createNewTaskElement = function (imageUrl, title, price, material) {
+            // Create List Item
+            var listItem = document.createElement("li");
+            listItem.className = "card"; // Apply the card class
+
+            // image
+            var image = document.createElement("img");
+            image.src = imageUrl;
+            image.alt = "Image";
+            image.style.width = "100%";
+
+            // label (title)
+            var titleLabel = document.createElement("p");
+            titleLabel.textContent = "Title: " + "Sneakers";
+
+            // label (price)
+            var priceLabel = document.createElement("p");
+            priceLabel.textContent = "Price: " + "15.000$";
+
+            // label (material)
+            var materialLabel = document.createElement("p");
+            materialLabel.textContent = "Material: " + "Golden";
+
+            // input (checkbox)
+            var checkBox = document.createElement("input");
+            checkBox.type = "checkbox";
+
+            // button.edit
+            var editButton = document.createElement("button");
+            editButton.innerText = "Edit";
+            editButton.className = "edit";
+
+            // button.delete
+            var deleteButton = document.createElement("button");
+            deleteButton.innerText = "Delete";
+            deleteButton.className = "delete";
+
+            // Each element needs appending
+            listItem.appendChild(image);
+            listItem.appendChild(checkBox);
+            listItem.appendChild(titleLabel);
+            listItem.appendChild(priceLabel);
+            listItem.appendChild(materialLabel);
+            listItem.appendChild(editButton);
+            listItem.appendChild(deleteButton);
+
+            return listItem;
+        }
+
+        // Add a new task
+        var addTask = function () {
+            var imageUrl = taskInput.value.trim();
+
+            if (imageUrl) {
+                // Create a new list item with the provided image URL
+                var listItem = createNewTaskElement(imageUrl, "Default Title", "Default Price", "Default Material");
+
+                // Append listItem to incompleteTasksHolder
+                incompleteTasksHolder.appendChild(listItem);
+                bindTaskEvents(listItem, taskCompleted);
+
+                taskInput.value = "";
+            }
+        }
+
+        // Clear all tasks
+        var clearAll = function () {
+            incompleteTasksHolder.innerHTML = '';
+            completedTasksHolder.innerHTML = '';
+        }
+
+        // Delete a task
+        var deleteTask = function () {
+            var listItem = this.parentNode;
+            var ul = listItem.parentNode;
+            ul.removeChild(listItem);
+        }
+
+        // Edit a task
+        var editTask = function () {
+            var listItem = this.parentNode;
+            var editInput = listItem.querySelector("input[type=text");
+            var label = listItem.querySelector("label");
+            var containsClass = listItem.classList.contains("editMode");
+
+            // if the class of the parent is .editMode
+            if (containsClass) {
+                // Switch from .editMode
+                // label text becomes the input's value
+                label.innerText = editInput.value;
+            } else {
+                // Switch to .editMode
+                // input value becomes the label's text
+                editInput.value = label.innerText;
+            }
+
+            // Toggle .editMode on the list item
+            listItem.classList.toggle("editMode");
+        }
+
+        var bindTaskEvents = function (taskListItem, checkBoxEventHandler) {
+            var checkBox = taskListItem.querySelector("input[type=checkbox]");
+            var editButton = taskListItem.querySelector("button.edit");
+            var deleteButton = taskListItem.querySelector("button.delete");
+
+            editButton.onclick = editTask;
+            deleteButton.onclick = deleteTask;
+            checkBox.onchange = checkBoxEventHandler;
+        }
+
+        addButton.addEventListener("click", addTask);
+        clearAllButton.addEventListener("click", clearAll);
+    </script>
+
+    <script src="index.js"></script>
+</body>
+
+</html>
